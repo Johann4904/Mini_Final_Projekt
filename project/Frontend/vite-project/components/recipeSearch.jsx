@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const RecipeSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -8,11 +8,15 @@ const RecipeSearch = () => {
     setSearchTerm(e.target.value);
   };
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    
-    // API-Anfrage an deine Backend-Server-Endpoint senden
-    fetch(`http://localhost:5000/recipes`, {
+  useEffect(() => {
+    if (searchTerm.length >= 3) {
+      handleSearchSubmit();
+    }
+  }, [searchTerm]);
+
+  const handleSearchSubmit = () => {
+   
+    fetch(`http://localhost:5000/recipes`, {  // API-Anfrage an deine Backend-Server-Endpoint senden
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -25,10 +29,9 @@ const RecipeSearch = () => {
       return response.json();
     })
     .then(recipeData => {
-      // Suchergebnisse filtern basierend auf dem Suchbegriff
       const filteredRecipes = recipeData.filter(recipe =>
-        recipe.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        recipe.description.toLowerCase().includes(searchTerm.toLowerCase())
+        (recipe.title && recipe.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (recipe.description && recipe.description.toLowerCase().includes(searchTerm.toLowerCase()))
       );
       setSearchResults(filteredRecipes);
     })
@@ -38,9 +41,10 @@ const RecipeSearch = () => {
   };
   
   return (
-    <div>
+    <div className='box box-search'>
+      <a href="/">Home</a>
       <h2>Rezeptsuche</h2>
-      <form onSubmit={handleSearchSubmit}>
+      <form onSubmit={(e) => { e.preventDefault(); handleSearchSubmit(); }}>
         <input 
           type="text" 
           value={searchTerm} 
@@ -55,9 +59,8 @@ const RecipeSearch = () => {
           <ul>
             {searchResults.map(recipe => (
               <li key={recipe.id}>
-                <h4>{recipe.name}</h4>
+                <h4>{recipe.title}</h4>
                 <p>{recipe.description}</p>
-                {/* Weitere Details des Rezepts anzeigen */}
               </li>
             ))}
           </ul>
@@ -68,4 +71,3 @@ const RecipeSearch = () => {
 }
 
 export default RecipeSearch;
-

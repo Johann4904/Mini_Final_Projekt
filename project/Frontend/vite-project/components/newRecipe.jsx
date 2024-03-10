@@ -4,12 +4,12 @@ import React, { useState } from 'react';
 
 const NewRecipe = () => {
   const [newRecipe, setNewRecipe] = useState({
-    name: '',
+    title: '',
     description: '', 
   });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
     setNewRecipe(prevState => ({
       ...prevState,
       [name]: value
@@ -17,7 +17,7 @@ const NewRecipe = () => {
   };
 
   const handleAddRecipe = () => {
-    if (!newRecipe.name || !newRecipe.description) {
+    if (!newRecipe.title || !newRecipe.description) {
       console.error('Name und Beschreibung sind erforderlich.');
       return;
     }
@@ -42,18 +42,19 @@ const NewRecipe = () => {
   
 
   return (
-    <div>
+    <div className='box box-newRcipe'>
+      <a href="/">Home</a>
       <h2>Neues Rezept hinzufügen</h2>
       <form>
-        <div>
-          <label>Name:</label>
-          <input type="text" name="name" value={newRecipe.name} onChange={handleInputChange} />
+        <div className='boxName'>
+          <h4>Titel:</h4>
+          <input type="text" name="title" value={newRecipe.title} onChange={handleInputChange} />
         </div>
-        <div>
-          <label>Beschreibung:</label>
+        <div className='boxBeschreibung'>
+          <h4>Beschreibung:</h4>
           <textarea name="description" value={newRecipe.description} onChange={handleInputChange}></textarea>
         </div>
-        <button type="button" onClick={handleAddRecipe}>Rezept hinzufügen</button>
+        <button type="button" onClick={handleAddRecipe}>hinzufügen</button>
       </form>
     </div>
   );
