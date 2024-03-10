@@ -9,7 +9,7 @@ const recipeSchema = new mongoose.Schema({
     type: String,
     required: true
   }
-});
+}, {versionKey: false});
 
 const Recipe = mongoose.model('Recipe', recipeSchema);
 

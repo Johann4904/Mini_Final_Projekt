@@ -20,3 +20,16 @@ export const createRecipe = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+export const deleteRecipeByTitle = async (req, res) => {
+  const { title } = req.params;
+
+  try {
+    const recipe = await Recipe.findOneAndDelete({ title });
+    if (!recipe) {
+      return res.status(404).json({ message: 'Rezept nicht gefunden' });
+    }
+    res.status(200).json({ message: 'Rezept erfolgreich gelöscht' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

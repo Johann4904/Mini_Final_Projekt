@@ -4,8 +4,8 @@ const RecipeSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
   };
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const RecipeSearch = () => {
 
   const handleSearchSubmit = () => {
    
-    fetch(`http://localhost:5000/recipes`, {  // API-Anfrage an deine Backend-Server-Endpoint senden
+    fetch(`http://localhost:5000/recipes`, {  // API-Anfrage  Backend-Server-Endpoint senden
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -41,35 +41,56 @@ const RecipeSearch = () => {
       console.error(error);
     });
   };
+
+  const handleDeleteSearchResult = async () => {
+    try {
+      for (const recipe of searchResults) {
+        const response = await fetch(`http://localhost:5000/recipes/${recipe.title}`, {
+          method: 'DELETE',
+        });
+        if (!response.ok) {
+          throw new Error('Fehler beim Löschen des Rezepts');
+        }
+      }
+      // Rezepte aus Suchergebnissen löschen
+      setSearchResults([]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   
   return (
     <div className='box box-search'>
-      <a href="/">Home</a>
-      <h2>Rezeptsuche</h2>
-      <form onSubmit={(e) => { e.preventDefault(); handleSearchSubmit(); }}>
-        <input 
-          type="text" 
-          value={searchTerm} 
-          onChange={handleSearchChange} 
-          placeholder="Suche nach Rezepten..." 
-        />
-        <button type="submit">Suche</button>
-      </form>
+    <a href="/">Home</a>
+    <h2>Rezeptsuche</h2>
+    <form onSubmit={(e) => { e.preventDefault(); handleSearchSubmit(); }}>
+      <input 
+        type="text" 
+        value={searchTerm} 
+        onChange={handleSearchChange} 
+        placeholder="Suche nach Rezepten..." 
+      />
+      <button type="submit">Suche</button>
       {searchResults.length > 0 && (
-        <div>
-          <h3>Suchergebnisse:</h3>
-          <ul>
-            {searchResults.map(recipe => (
-              <li key={recipe.id}>
-                <h4>{recipe.title}</h4>
-                <p>{recipe.description}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <button onClick={handleDeleteSearchResult}>Löschen</button>
       )}
-    </div>
-  );
+    </form>
+    {searchResults.length > 0 && (
+      <div>
+        <h3>Suchergebnisse:</h3>
+        <ul>
+          {searchResults.map(recipe => (
+            <li key={recipe.id}>
+              <h4>{recipe.title}</h4>
+              <p>{recipe.description}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+);
 }
+
 
 export default RecipeSearch;
