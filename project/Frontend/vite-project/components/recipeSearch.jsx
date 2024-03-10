@@ -9,7 +9,9 @@ const RecipeSearch = () => {
   };
 
   useEffect(() => {
-    if (searchTerm.length >= 3) {
+    if (searchTerm.length === 0) {
+      setSearchResults([]);
+    } else if (searchTerm.length >= 3) {
       handleSearchSubmit();
     }
   }, [searchTerm]);

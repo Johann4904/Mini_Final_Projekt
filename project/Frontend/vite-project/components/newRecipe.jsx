@@ -34,6 +34,10 @@ const NewRecipe = () => {
         throw new Error('Fehler beim Hinzufügen des neuen Rezepts');
       }
       console.log('Neues Rezept erfolgreich hinzugefügt');
+      setNewRecipe({
+        title: '',
+        description: ''
+      });
     })
     .catch(error => {
       console.error(error);
