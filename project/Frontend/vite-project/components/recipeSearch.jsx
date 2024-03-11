@@ -72,7 +72,7 @@ const RecipeSearch = () => {
         onChange={handleSearchChange} 
         placeholder="Suche nach Rezepten..." 
       />
-      <button type="submit">Suche</button>
+    {/*   <button type="submit">Suche</button> */}
       {searchResults.length > 0 && (
         <button onClick={handleDeleteSearchResult}>Löschen</button>
       )}
