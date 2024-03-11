@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 const RecipeSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -31,9 +31,11 @@ const RecipeSearch = () => {
       return response.json();
     })
     .then(recipeData => {
+
+      setSearchResults([]);// Vor dem Hinzufügen neuer Suchergebnisse das Array leeren
+
       const filteredRecipes = recipeData.filter(recipe =>
-        (recipe.title && recipe.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (recipe.description && recipe.description.toLowerCase().includes(searchTerm.toLowerCase()))
+        (recipe.title && recipe.title.toLowerCase().includes(searchTerm.toLowerCase()))
       );
       setSearchResults(filteredRecipes);
     })
@@ -61,7 +63,7 @@ const RecipeSearch = () => {
   
   return (
     <div className='box box-search'>
-    <a href="/">Home</a>
+    <a href="/">zurück</a>
     <h2>Rezeptsuche</h2>
     <form onSubmit={(e) => { e.preventDefault(); handleSearchSubmit(); }}>
       <input 

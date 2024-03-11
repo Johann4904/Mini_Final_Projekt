@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 
 
@@ -47,7 +47,7 @@ const NewRecipe = () => {
 
   return (
     <div className='box box-newRcipe'>
-      <a href="/">Home</a>
+      <a href="/">zurück</a>
       <h2>Neues Rezept hinzufügen</h2>
       <form>
         <div className='boxName'>
