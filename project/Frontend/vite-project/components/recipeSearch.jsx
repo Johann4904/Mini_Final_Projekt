@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 const RecipeSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [editingRecipe, setEditingRecipe] = useState(null);
+  const [updatedDescription, setUpdatedDescription] = useState('');
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -17,8 +19,7 @@ const RecipeSearch = () => {
   }, [searchTerm]);
 
   const handleSearchSubmit = () => {
-   
-    fetch(`http://localhost:5000/recipes`, {  // API-Anfrage  Backend-Server-Endpoint senden
+    fetch(`http://localhost:5000/recipes`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -31,11 +32,9 @@ const RecipeSearch = () => {
       return response.json();
     })
     .then(recipeData => {
-
-      setSearchResults([]);// Vor dem Hinzufügen neuer Suchergebnisse das Array leeren
-
+      setSearchResults([]);
       const filteredRecipes = recipeData.filter(recipe =>
-        (recipe.title && recipe.title.toLowerCase().includes(searchTerm.toLowerCase()))
+        recipe.title && recipe.title.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setSearchResults(filteredRecipes);
     })
@@ -54,45 +53,92 @@ const RecipeSearch = () => {
           throw new Error('Fehler beim Löschen des Rezepts');
         }
       }
-      // Rezepte aus Suchergebnissen löschen
       setSearchResults([]);
     } catch (error) {
       console.error(error);
     }
   };
+
+  const handleUpdateRecipe = (title) => {
+    setEditingRecipe(title);
+    const recipe = searchResults.find(recipe => recipe.title === title);
+    setUpdatedDescription(recipe.description);
+  };
+
+  const handleSaveRecipeChange = (event) => {
+    setUpdatedDescription(event.target.value);
+  };
+
+  const handleConfirmUpdate = async (title) => {
+    try {
+      const response = await fetch(`http://localhost:5000/recipes/${title}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ description: updatedDescription })
+      });
   
+      if (!response.ok) {
+        throw new Error('Fehler beim Aktualisieren des Rezepts');
+      }
+  
+      // Rezept aktualisiert, also aktualisiere die Suchergebnisse.
+      handleSearchSubmit();
+      setEditingRecipe(null);
+      setUpdatedDescription('');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className='box box-search'>
-    <a href="/">zurück</a>
-    <h2>Rezeptsuche</h2>
-    <form onSubmit={(e) => { e.preventDefault(); handleSearchSubmit(); }}>
-      <input 
-        type="text" 
-        value={searchTerm} 
-        onChange={handleSearchChange} 
-        placeholder="Suche nach Rezepten..." 
-      />
-    {/*   <button type="submit">Suche</button> */}
+      <a href="/">zurück</a>
+      <h2>Rezeptsuche</h2>
+      <form onSubmit={(e) => { e.preventDefault(); handleSearchSubmit(); }}>
+        <input 
+          type="text" 
+          value={searchTerm} 
+          onChange={handleSearchChange} 
+          placeholder="Suche nach Rezepten..." 
+        />
+        {searchResults.length > 0 && (
+          <>
+            <button onClick={handleDeleteSearchResult}>Löschen</button>
+          </>
+        )}
+      </form>
       {searchResults.length > 0 && (
-        <button onClick={handleDeleteSearchResult}>Löschen</button>
+        <div>
+          <h3>Suchergebnisse:</h3>
+          <ul>
+            {searchResults.map(recipe => (
+              <li key={recipe.title}>
+                <div className='box-aktual'>
+                  <h4>{recipe.title}</h4>
+                  {editingRecipe === recipe.title ? (
+                    <>
+                      <textarea 
+                        value={updatedDescription}
+                        onChange={handleSaveRecipeChange}
+                      ></textarea>
+                      <button className='btn-aktual' onClick={() => handleConfirmUpdate(recipe.title)}>Aktualisieren</button>
+                    </>
+                  ) : (
+                    <>
+                      <p>{recipe.description}</p>
+                      <button className='btn-bearb' onClick={() => handleUpdateRecipe(recipe.title)}>Bearbeiten</button>
+                    </>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
-    </form>
-    {searchResults.length > 0 && (
-      <div>
-        <h3>Suchergebnisse:</h3>
-        <ul>
-          {searchResults.map(recipe => (
-            <li key={recipe.id}>
-              <h4>{recipe.title}</h4>
-              <p>{recipe.description}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
-    )}
-  </div>
-);
+    </div>
+  );
 }
-
 
 export default RecipeSearch;

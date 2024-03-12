@@ -11,6 +11,6 @@ const recipeSchema = new mongoose.Schema({
   }
 }, {versionKey: false});
 
-const Recipe = mongoose.model('Recipe', recipeSchema);
+const Recipe = mongoose.model('Recipe', recipeSchema, 'recipes');
 
 export default Recipe;

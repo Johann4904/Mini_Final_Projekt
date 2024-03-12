@@ -7,7 +7,7 @@ const NewRecipe = () => {
     title: '',
     description: '', 
   });
-
+  // Event-Handler für Eingabe in die Textfelder.
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setNewRecipe(prevState => ({
@@ -15,17 +15,17 @@ const NewRecipe = () => {
       [name]: value
     }));
   };
-
+  //Rezept hinzufügen.
   const handleAddRecipe = () => {
-    if (!newRecipe.title || !newRecipe.description) {
+    if (!newRecipe.title || !newRecipe.description) { // Überprüfen, ob title und description eingegeben wurden.
       console.error('Name und Beschreibung sind erforderlich.');
       return;
     }
   
-    fetch('http://localhost:5000/recipes', {
+    fetch('http://localhost:5000/recipes', { //API POST-Anfrage an den Backend-Server-Endpunkt senden.
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json'//Inhaltstyp der Anfrage ist JSON.
       },
       body: JSON.stringify(newRecipe)
     })

@@ -33,3 +33,22 @@ export const deleteRecipeByTitle = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const updateRecipe = async (req, res) => {
+  const { title } = req.params;
+  const { description } = req.body;
+
+  try {
+    const recipe = await Recipe.findOne({ title });
+    if (!recipe) {
+      return res.status(404).json({ message: 'Rezept nicht gefunden' });
+    }
+
+    recipe.description = description;
+    await recipe.save();
+
+    res.status(200).json(recipe);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
