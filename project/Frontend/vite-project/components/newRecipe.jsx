@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
-
+//React-Komponente namens NewRecipe, die ein Formular zum Hinzufügen neuer Rezepte darstellt.
 
 const NewRecipe = () => {
-  const [newRecipe, setNewRecipe] = useState({
+  const [newRecipe, setNewRecipe] = useState({//die es ermöglicht, den Zustand in funktionalen Komponenten zu verwenden, ohne eine Klasse zu erstellen.
     title: '',
     description: '', 
   });

@@ -1,5 +1,7 @@
 import Recipe from '../models/recipeModel.js';
 
+
+//get
 export const getAllRecipes = async (req, res) => {
   try {
     const recipes = await Recipe.find();
@@ -9,6 +11,7 @@ export const getAllRecipes = async (req, res) => {
   }
 };
 
+//POST
 export const createRecipe = async (req, res) => {
   const { title, description } = req.body;
   
@@ -20,6 +23,8 @@ export const createRecipe = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+//DELETE
 export const deleteRecipeByTitle = async (req, res) => {
   const { title } = req.params;
 
@@ -34,6 +39,7 @@ export const deleteRecipeByTitle = async (req, res) => {
   }
 };
 
+//PATCH
 export const updateRecipe = async (req, res) => {
   const { title } = req.params;
   const { description } = req.body;

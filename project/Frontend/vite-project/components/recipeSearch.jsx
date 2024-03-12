@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 
-const RecipeSearch = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [editingRecipe, setEditingRecipe] = useState(null);
-  const [updatedDescription, setUpdatedDescription] = useState('');
+  const RecipeSearch = () => {
+  const [searchTerm, setSearchTerm] = useState(''); // Der Suchbegriff, nach dem gesucht wird.
+  const [searchResults, setSearchResults] = useState([]); //  Die Ergebnisse der Suche.
+  const [editingRecipe, setEditingRecipe] = useState(null); // Der Titel des Rezepts, das gerade bearbeitet wird.
+  const [updatedDescription, setUpdatedDescription] = useState(''); // Die aktualisierte Beschreibung des Rezepts während der Bearbeitung.
 
-  const handleSearchChange = (event) => {
+  const handleSearchChange = (event) => { // Wird aufgerufen, wenn sich der Suchbegriff ändert.
     setSearchTerm(event.target.value);
   };
 
@@ -18,7 +18,7 @@ const RecipeSearch = () => {
     }
   }, [searchTerm]);
 
-  const handleSearchSubmit = () => {
+  const handleSearchSubmit = () => { //  Wird aufgerufen, um die Rezeptsuche auszuführen.
     fetch(`http://localhost:5000/recipes`, {
       method: 'GET',
       headers: {
@@ -43,7 +43,7 @@ const RecipeSearch = () => {
     });
   };
 
-  const handleDeleteSearchResult = async () => {
+  const handleDeleteSearchResult = async () => { // Wird aufgerufen, um die ausgewählten Suchergebnisse zu löschen.
     try {
       for (const recipe of searchResults) {
         const response = await fetch(`http://localhost:5000/recipes/${recipe.title}`, {
@@ -59,17 +59,17 @@ const RecipeSearch = () => {
     }
   };
 
-  const handleUpdateRecipe = (title) => {
+  const handleUpdateRecipe = (title) => { // Wird aufgerufen, um die Bearbeitung eines bestimmten Rezepts zu starten.
     setEditingRecipe(title);
     const recipe = searchResults.find(recipe => recipe.title === title);
     setUpdatedDescription(recipe.description);
   };
 
-  const handleSaveRecipeChange = (event) => {
+  const handleSaveRecipeChange = (event) => { // Wird aufgerufen, wenn sich die aktualisierte Beschreibung des Rezepts ändert.
     setUpdatedDescription(event.target.value);
   };
 
-  const handleConfirmUpdate = async (title) => {
+  const handleConfirmUpdate = async (title) => { //
     try {
       const response = await fetch(`http://localhost:5000/recipes/${title}`, {
         method: 'PATCH',
